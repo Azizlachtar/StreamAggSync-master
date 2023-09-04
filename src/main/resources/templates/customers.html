@@ -1,0 +1,95 @@
+<!-- Include WebSocket JavaScript libraries -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.0/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/dist/stomp.min.js"></script>
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            margin: 0;
+        }
+
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <!-- Your existing head content -->
+
+    <!-- Include jQuery for AJAX -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Function to refresh data using AJAX
+        function refreshData() {
+            $.ajax({
+                url: "/refreshDataCustomer", // Replace with your Spring Boot controller mapping
+                method: "GET",
+                success: function(response) {
+
+                    // Update the tbody content with new data
+                    $("#data-tbody").html(response);
+                },
+                error: function(error) {
+                    console.error("Error fetching data:", error);
+                }
+            });
+        }
+
+        // Auto-refresh data every 5 seconds
+        setInterval(refreshData, 5000); // Adjust the interval as needed
+    </script>
+</head>
+<body>
+<h1>List of Customers</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Customer ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody id="data-tbody">
+    <tr th:each="customerDTO : ${customerDTOs}">
+        <td th:text="${customerDTO.id}"></td>
+        <td th:text="${customerDTO.first_name}"></td>
+        <td th:text="${customerDTO.last_name}"></td>
+        <td><a th:href="@{'/customer/accounts/' + ${customerDTO.id}}">View Accounts</a></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+
+
+</html>

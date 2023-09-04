@@ -1,0 +1,110 @@
+<!-- Include WebSocket JavaScript libraries -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.0/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/dist/stomp.min.js"></script>
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            margin: 0;
+        }
+
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <!-- Your existing head content -->
+
+    <!-- Include jQuery for AJAX -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Function to refresh data using AJAX
+        var initialCustomerId = /*[[${customerId}]]*/ ''; // This directly inserts the customer ID into the JavaScript variable
+
+        function refreshAccountData() {
+            let customerId = $("#customerId").data("customerid");
+
+            $.ajax({
+                url: "/refreshDataAccounts?customerId=" + customerId,
+                method: "GET",
+                success: function(response) {
+                    // Update the tbody content with new data
+                    $("#data-tbody").html(response);
+                },
+                error: function(error) {
+                    console.error("Error fetching data:", error);
+                }
+            });
+        }
+
+
+
+        // Auto-refresh data every 5 seconds
+        setInterval(refreshAccountData, 5000); // Adjust the interval as needed
+
+        // </script>
+    <title></title>
+</head>
+<body>
+<h1>Accounts for Customer: <span th:text="${customerName}"></span></h1>
+<span id="customerId" th:data-customerId="${customerId}" style="display: none;"></span>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID Account</th>
+        <th>Name</th>
+        <th>Permitted Denominations</th>
+        <th>Status</th>
+        <th>Stakeholder IDs</th>
+        <th>Arranged Overdraft Limit</th>
+        <th>Interest Application Day</th>
+    </tr>
+    </thead>
+    <tbody id="data-tbody">
+    <tr th:each="accountDTO : ${accountDTOs}">
+        <td th:text="${accountDTO.id}"></td>
+        <td th:text="${accountDTO.name}"></td>
+        <td th:text="${accountDTO.permitted_denominations}"></td>
+        <td th:text="${accountDTO.status}"></td>
+        <td th:text="${accountDTO.stakeholder_ids}"></td>
+        <td th:text="${accountDTO.arranged_overdraft_limit}"></td>
+        <td th:text="${accountDTO.interest_application_day}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+
+
+</html>
